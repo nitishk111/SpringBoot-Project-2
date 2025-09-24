@@ -2,6 +2,7 @@ package com.message.auth_service.security_configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -16,13 +17,15 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/").hasRole("USER")
-                                .anyRequest().permitAll());
-
+                        req.requestMatchers("/a").hasRole("USER")
+                                .requestMatchers("/b").hasRole("ADMIN")
+                                .anyRequest().authenticated())
+                .httpBasic((Customizer.withDefaults())); // test in postman
+//                .formLogin(Customizer.withDefaults()); // test in browser
         return http.build();
     }
 
@@ -36,14 +39,13 @@ public class SecurityConfiguration {
         UserDetails user2 = User
                 .withUsername("user2")
                 .password(passwordEncoder().encode(("u2")))
-                .roles("USER")
+                .roles("USER", "ADMIN")
                 .build();
         UserDetails user3 = User
                 .withUsername("user3")
                 .password(passwordEncoder().encode(("u3")))
-                .roles("USER")
+                .roles("ADMIN")
                 .build();
-
         return new InMemoryUserDetailsManager(user1, user2, user3);
     }
 
