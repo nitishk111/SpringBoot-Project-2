@@ -1,21 +1,24 @@
 package com.message.auth_service.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 import java.util.Random;
 
 /**
- *
  * created By : Nitish
  */
 
+@Data
 @Entity
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"userName"}),
         @UniqueConstraint(columnNames = {"userEmail"})
 })
 @SequenceGenerator(name = "user_id_generator", initialValue = 111, allocationSize = 1)
+@Validated
 public class User {
 
     @Id
@@ -38,11 +41,10 @@ public class User {
     private LocalDateTime updatedAt;
 
     @ManyToOne
-    @JoinColumn(name="roleId")
-    @Column(nullable = false)
+    @JoinColumn(name="roleId", nullable = false)
     private Role role;
 
-    @Column(nullable = false, columnDefinition = "default true")
+    @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean isActive;
 
     @PrePersist

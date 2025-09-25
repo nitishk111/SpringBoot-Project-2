@@ -38,3 +38,6 @@ build/
 *.tmp
 *.out
 .settings/
+.metadata/
+bin/
+

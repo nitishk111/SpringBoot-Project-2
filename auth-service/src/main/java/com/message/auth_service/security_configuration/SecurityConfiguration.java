@@ -19,11 +19,18 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.
+                cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/a").hasRole("USER")
-                                .requestMatchers("/b").hasRole("ADMIN")
-                                .anyRequest().authenticated())
+                        req.requestMatchers("/test/a").hasRole("USER")
+                                .requestMatchers("/test/b").hasRole("ADMIN")
+                                .requestMatchers(
+                                        "/swagger-ui/**",
+                                        "/v3/api-docs/**",
+                                        "/v3/api-docs.yaml"
+                                ).permitAll()
+                                .anyRequest().permitAll())
                 .httpBasic((Customizer.withDefaults())); // test in postman
 //                .formLogin(Customizer.withDefaults()); // test in browser
         return http.build();
