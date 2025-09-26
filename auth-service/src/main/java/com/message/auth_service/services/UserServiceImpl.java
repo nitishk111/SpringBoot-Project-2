@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto getUserById(long userId) throws Exception {
-        Optional<User> user = userRepository.findById(userId);
+        Optional<User> user = userRepository.findByUserIdAndIsActiveTrue(userId);
         if (user.isEmpty()) {
             log.warn("User does not exists");
             throw new RuntimeException("User does not exists");

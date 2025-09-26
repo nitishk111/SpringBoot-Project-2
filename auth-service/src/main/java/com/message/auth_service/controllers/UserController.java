@@ -54,7 +54,7 @@ public class UserController {
     public ResponseEntity<Object> getUser() throws Exception {
         String username = SecurityUtils.getCurrentUser().getUsername();
         try {
-            return new ResponseEntity<>(userService.getUser(username), HttpStatus.FOUND);
+            return new ResponseEntity<>(userService.getUser(username), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Problem encountered while fetching profile: " + e.getMessage(), HttpStatus.BAD_REQUEST);
 
@@ -63,10 +63,11 @@ public class UserController {
 
     @PutMapping
     @Operation(summary = "Enter fields you want to update")
-    public ResponseEntity<String> updateUser(@RequestParam(value = "username", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "email", required = false) String userEmail) throws Exception {
+    public ResponseEntity<String> updateUser(@RequestParam(value = "current_password") String currentPassword,@RequestParam(value = "username", required = false) String userName, @RequestParam(value = "password", required = false) String password, @RequestParam(value = "email", required = false) String userEmail) throws Exception {
         String username = SecurityUtils.getCurrentUser().getUsername();
-        long userId = userService.getUser(username).getUserId();
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, currentPassword));
 
+        long userId = userService.getUser(username).getUserId();
         UserSignUpDto user = new UserSignUpDto();
         user.setUserEmail(userEmail);
         user.setUserName(userName);

@@ -1,6 +1,5 @@
 package com.message.auth_service.controllers;
 
-import com.message.auth_service.dto.UserResponseDto;
 import com.message.auth_service.dto.UserSignInDto;
 import com.message.auth_service.dto.UserSignUpDto;
 import com.message.auth_service.services.UserService;
@@ -14,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,7 +52,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    @Operation(summary = "Sign in")
+    @Operation(summary = "Sign in via username / email")
     public ResponseEntity<String> signIn(@Validated @RequestBody UserSignInDto userDto) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userDto.getUserName(), userDto.getUserPassword()));
