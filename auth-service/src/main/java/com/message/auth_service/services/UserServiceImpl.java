@@ -32,20 +32,30 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserRepository userRepository, UserMapper mapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.mapper = mapper;
-        this.passwordEncoder=passwordEncoder;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public User createUser(UserSignUpDto userDto) {
+    public UserResponseDto createUser(UserSignUpDto userDto) {
         User user = mapper.toEntity(userDto);
         user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
-        return userRepository.save(user);
+        return mapper.toDto(userRepository.save(user));
     }
 
     @Override
     public UserResponseDto getUserById(long userId) throws Exception {
-        Optional<User> user= userRepository.findById(userId);
-        if(user.isEmpty()){
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            log.warn("User does not exists");
+            throw new RuntimeException("User does not exists");
+        }
+        return mapper.toDto(user.get());
+    }
+
+    @Override
+    public UserResponseDto getUser(String username) throws Exception {
+        Optional<User> user = userRepository.findByUserName(username);
+        if (user.isEmpty()) {
             log.warn("User does not exists");
             throw new RuntimeException("User does not exists");
         }
@@ -54,29 +64,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public int updateUser(long userId, UserSignUpDto userDetail) {
+    public String updateUser(long userId, UserSignUpDto userDto) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaUpdate<User> update = cb.createCriteriaUpdate(User.class);
         Root<User> root = update.from(User.class);
 
-        if (userDetail.getUserName() != null) {
-            update.set("userName", userDetail.getUserName());
+        if (userDto.getUserName() != null) {
+            update.set("userName", userDto.getUserName());
         }
-        if (userDetail.getUserEmail() != null) {
-            update.set("userEmail", userDetail.getUserEmail());
+        if (userDto.getUserEmail() != null) {
+            update.set("userEmail", userDto.getUserEmail());
         }
-        if (userDetail.getUserPassword() != null) {
-            update.set("userEmail", passwordEncoder.encode(userDetail.getUserPassword()));
+        if (userDto.getUserPassword() != null) {
+            update.set("userPassword", passwordEncoder.encode(userDto.getUserPassword()));
         }
-
         update.where(cb.equal(root.get("userId"), userId));
-        return entityManager.createQuery(update).executeUpdate();
+        entityManager.createQuery(update).executeUpdate();
+        return "Record updated";
     }
 
     @Override
-    public void deleteUser(long userId) {
-        User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
+    public void deleteUser(String username) {
+        User existingUser = userRepository.findByUserName(username)
+                .orElseThrow(() -> new RuntimeException("User not found with id " + username));
         existingUser.setActive(false);
         userRepository.save(existingUser);
     }

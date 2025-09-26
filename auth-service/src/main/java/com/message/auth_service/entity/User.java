@@ -18,7 +18,6 @@ import java.util.Random;
         @UniqueConstraint(columnNames = {"userEmail"})
 })
 @SequenceGenerator(name = "user_id_generator", initialValue = 111, allocationSize = 1)
-@Validated
 public class User {
 
     @Id
@@ -31,7 +30,7 @@ public class User {
     @Column(nullable = false, length = 20)
     private String userEmail;
 
-    @Column(nullable = false, length = 150)
+    @Column(nullable = false, length = 127)
     private String userPassword;
 
     @Column(nullable = false, updatable = false)

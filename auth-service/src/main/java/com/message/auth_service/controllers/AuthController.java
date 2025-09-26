@@ -1,5 +1,6 @@
 package com.message.auth_service.controllers;
 
+import com.message.auth_service.dto.UserResponseDto;
 import com.message.auth_service.dto.UserSignInDto;
 import com.message.auth_service.dto.UserSignUpDto;
 import com.message.auth_service.services.UserService;
@@ -16,13 +17,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
-@Tag(name = "2. Public Controller", description = "User can register or sign in")
+@Tag(name = "1. Public APIs", description = "User can register or sign in")
 public class AuthController {
 
     private final UserService userService;
@@ -32,14 +34,24 @@ public class AuthController {
     @Autowired
     public AuthController(UserServiceImpl userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.userService = userService;
-        this.authenticationManager= authenticationManager;
-        this.jwtUtil=jwtUtil;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+    }
+
+    @GetMapping("/test")
+    @Operation(summary = "Returns message if service is up and responsive")
+    public String sayHello() {
+        return "Service Working..";
     }
 
     @PostMapping("/sign-up")
     @Operation(summary = "New Registration")
-    public void signUp(@Validated @RequestBody UserSignUpDto userDto) {
-        userService.createUser(userDto);
+    public ResponseEntity<Object> signUp(@Validated @RequestBody UserSignUpDto userDto) {
+        try {
+            return new ResponseEntity<>(userService.createUser(userDto), HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Can not save user: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/sign-in")

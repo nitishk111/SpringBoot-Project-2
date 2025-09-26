@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin")
 @Slf4j
-@Tag(name= "4. Admin APIs", description = "Admin can add roles for users")
+@Tag(name= "3. Admin APIs", description = "Admin can add roles for users")
 public class AdminController {
 
     private final AdminService adminService;
@@ -31,10 +31,10 @@ public class AdminController {
 
     @PostMapping("/add-new-role")
     @Operation(summary = "Add new role")
-    public ResponseEntity<Role> addNewRole(@RequestParam String roleType) throws Exception {
+    public ResponseEntity<String> addNewRole(@RequestParam String roleType) throws Exception {
         log.info("Request for addition of new role.");
         Role role= adminService.addNewRole(roleType);
         log.info("New Role saved: {}", role);
-        return new ResponseEntity<>(role,HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(role.toString(),HttpStatus.ACCEPTED);
     }
 }
