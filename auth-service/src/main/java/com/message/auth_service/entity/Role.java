@@ -2,8 +2,10 @@ package com.message.auth_service.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "roles")
 public class Role {
@@ -14,4 +16,8 @@ public class Role {
 
     @Column(unique = true, nullable = false, length = 15)
     private String roleType;
+
+    public Role(int roleId){
+        this.roleId=roleId;
+    }
 }

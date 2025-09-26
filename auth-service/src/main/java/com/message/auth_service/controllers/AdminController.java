@@ -3,7 +3,7 @@ package com.message.auth_service.controllers;
  * Admin APIs
  */
 
-import com.message.auth_service.AdminService;
+import com.message.auth_service.services.AdminService;
 import com.message.auth_service.entity.Role;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

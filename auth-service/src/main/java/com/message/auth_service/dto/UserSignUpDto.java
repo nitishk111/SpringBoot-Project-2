@@ -9,7 +9,8 @@ import lombok.Data;
 public class UserSignUpDto {
 
     @NotBlank(message = "username is mandatory")
-    @Email(message = "Enter Valid username, of length between 3 to 10", regexp = "^[A-Za-z][A-Za-z0-9_]{3,10}$")
+    @Size(min=3, max = 10, message = "username should be between 3 to 10 character long")
+//    @Email(message = "Enter Valid username, of length between 3 to 10", regexp = "^[A-Za-z][A-Za-z0-9_]{3,10}$")
     private String userName;
 
     @NotBlank(message = "email is mandatory")

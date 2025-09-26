@@ -1,4 +1,4 @@
-package com.message.auth_service;
+package com.message.auth_service.services;
 
 import com.message.auth_service.entity.Role;
 import com.message.auth_service.repository.RoleRepository;

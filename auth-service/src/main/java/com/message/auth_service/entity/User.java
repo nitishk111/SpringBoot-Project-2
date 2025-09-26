@@ -42,15 +42,16 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name="roleId", nullable = false)
-    private Role role;
+    private Role role = new Role(2);
 
-    @Column(nullable = false, columnDefinition = "boolean default true")
+    @Column(nullable = false)
     private boolean isActive;
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+        isActive=true;
     }
 
     @PreUpdate
