@@ -32,7 +32,7 @@ public class SecurityConfiguration {
                 cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/sign-up", "/sign-in").permitAll()
+                        req.requestMatchers("/sign-up", "/sign-in", "/Change-password", "/forgot-password").permitAll()
                                 .requestMatchers(
                                         "/swagger-ui/**",
                                         "/v3/api-docs/**",

@@ -49,7 +49,7 @@ public class UserController {
         }
     }
 
-    @GetMapping()
+    @GetMapping
     @Operation(summary = "See your profile")
     public ResponseEntity<Object> getUser() throws Exception {
         String username = SecurityUtils.getCurrentUser().getUsername();
@@ -76,9 +76,9 @@ public class UserController {
         return ResponseEntity.ok(jwtUtil.generateToken(user.getUserName() != null ? user.getUserName() : username));
     }
 
-    @DeleteMapping("/{password}")
+    @DeleteMapping
     @Operation(summary = "Delete your profile by entering password")
-    public ResponseEntity<String> deleteUser(@PathVariable("password") String password) {
+    public ResponseEntity<String> deleteUser(@RequestParam("password") String password) {
         String username = SecurityUtils.getCurrentUser().getUsername();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         try {

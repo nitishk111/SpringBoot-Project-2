@@ -14,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
@@ -64,4 +61,26 @@ public class AuthController {
             return new ResponseEntity<>("Invalid Credentials", HttpStatus.UNAUTHORIZED);
         }
     }
+
+    @PostMapping("/forgot-password")
+    @Operation(summary = "Forgot Password? Change it by entering email or username")
+    public ResponseEntity<String> forgotPassword(@RequestParam(value = "username") String username) {
+        try {
+            return new ResponseEntity<>("OTP is: " + userService.generateOtp(username), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/Change-password")
+    @Operation(summary = "Provide OTP and new password")
+    public ResponseEntity<String> changePassword(@RequestParam(value = "username") String username, @RequestParam(value = "otp") int otp, @RequestParam(value = "password") String password) {
+        try {
+            return new ResponseEntity<>(userService.resetPassword(otp, password, username), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 }
