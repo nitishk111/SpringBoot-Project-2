@@ -13,7 +13,7 @@ public class CorsMappingConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("http://localhost:8080/swagger-ui/index.html") // frontend URL
+                .allowedOriginPatterns("http://localhost:*") // frontend URL
                 .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true);
