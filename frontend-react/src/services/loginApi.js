@@ -8,12 +8,13 @@ export async function loginApi(payload) {
             body: JSON.stringify(payload),
         });
         if (!res.ok) {
-           return await res.text();
+            const data = await res.text();
+            return { success: false, message: data };
         }
-        let data;    
-        data = await res.text(); 
+        let data;
+        data = await res.text();
         document.cookie = `token=${data}; path=/; max-age=${60 * 60 * 24}`;
-        return "Login in successfull";
+        return { success: true, messgae: "Login in successfull" };
 
     } catch (networkError) {
         return { success: false, message: "Cannot connect to server. Please try again." };
@@ -50,3 +51,42 @@ export const testApi = async () => {
         return "Cannot connect to server. Please try again.";
     }
 }
+
+
+export const changePassword = async (username, otp, password) => {
+    try {
+        const res = await fetch(
+            `http://localhost:8080/Change-password?username=${encodeURIComponent(username)}&otp=${otp}&password=${encodeURIComponent(password)}`,
+            {
+                method: "POST",
+            }
+        );
+
+        if (!res.ok) {
+            throw new Error("Failed to change password");
+        }
+
+        const data = await res.text();
+        return { success: true, data };
+    } catch (err) {
+        return { success: false, error: err.message };
+    }
+};
+
+export const getOpt = async (username) => {
+    try {
+        const res = await fetch(
+            `http://localhost:8080/forgot-password?username=${encodeURIComponent(username)}`,
+            {
+                method: "POST",
+            }
+        );
+        if (!res.ok) {
+            throw new Error("Something went wrong");
+        }
+        const data = await res.text();
+        return { success: true, data };
+    } catch (err) {
+        return { success: false, error: err.message };
+    }
+};

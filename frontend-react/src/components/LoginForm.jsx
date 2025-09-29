@@ -3,7 +3,7 @@ import InputField from "./InputField";
 import "../css/LoginForm.css";
 import { loginApi, registerApi, testApi } from "../services/loginApi";
 
-export default function LoginForm() {
+export default function LoginForm({setforgetPass, setIsLoggedIn}) {
   const [apiMessage, setApiMessage] = useState("");
   const [passwordMismatch, setPasswordMismatch] = useState(false);
   const [formType, setFormType] = useState("login");
@@ -55,7 +55,10 @@ export default function LoginForm() {
     } = formData;
     if (username && password) {
       const output = await loginApi({userName: username,userPassword: password });
-      setApiMessage(output);
+      if(output.success){
+        setIsLoggedIn(true);
+      }
+      setApiMessage(output.message);
     } else {
       setApiMessage("Error: Enter credentials first");
     }
@@ -194,6 +197,7 @@ export default function LoginForm() {
             >
               {formType === "login" ? "Register" : "Login"}
             </button>
+            <button onClick={()=> setforgetPass(true)}>Forget Password</button>
           </form>
           <div className="info-panel">
             <button
